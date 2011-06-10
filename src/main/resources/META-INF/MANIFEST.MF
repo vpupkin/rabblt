@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: ../libs/dnsjava-2.1.0.jar ../libs/rnio-1.jar ../libs/commo
+ ns-lang-2.5.jar
+Created-By: 1.6.0_20 (Sun Microsystems Inc.)
+Main-Class: rabbit.proxy.ProxyStarter
+

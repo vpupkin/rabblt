@@ -1,0 +1,71 @@
+package rabbit.client;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import rabbit.http.HttpHeader;
+import rabbit.httpio.WebConnectionResourceSource;
+
+
+/** A basic ClientListener.
+ *
+ * @author <a href="mailto:robo@khelekore.org">Robert Olofsson</a>
+ */
+public class ClientListenerAdapter implements ClientListener {
+    private final Logger logger = Logger.getLogger (getClass ().getName ());
+
+    /** Create the redirected url and calls redirectedTo() and requestDone().
+     */
+    public void redirected (HttpHeader request, String location, 
+				      ClientBase base) {
+	try {
+	    URL u = base.getRedirectedURL (request, location);
+	    redirectedTo (u.toString ());
+	    requestDone (request);
+	} catch (IOException e) {
+	    handleFailure (request, e);
+	}
+    }
+
+    /** This method does nothing, override to perform actual request. 
+     */
+    public void redirectedTo (String url) throws IOException {
+	// nothing
+    }
+
+    /** This method does nothing. 
+     */
+    public void handleResponse (HttpHeader request, 
+					  HttpHeader response, 
+					  WebConnectionResourceSource wc) {
+    }
+
+    /** This method returns true, override if you want different behaviour.
+     */
+    public boolean followRedirects () {
+	return true;
+    }
+
+    /** Logs an error to the logger and calls requestDone().
+     */ 
+    public void handleTimeout (HttpHeader request) {
+	logger.warning ("Request to " + request.getRequestURI () + 
+			" timed out");
+	requestDone (request);
+    }
+
+    /** Logs an error to the logger and calls requestDone().
+     */ 
+    public void handleFailure (HttpHeader request, Exception e) {
+	logger.log (Level.WARNING, 
+		    "Request to " + request.getRequestURI () + " failed: ", 
+		    e);
+	requestDone (request);
+    }
+    
+    /** Handle any cleanup in this method. */
+    public void requestDone (HttpHeader request) {
+	// nothing.
+    }
+}
