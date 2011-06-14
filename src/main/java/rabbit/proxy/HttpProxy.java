@@ -34,6 +34,7 @@ import rabbit.http.HttpDateParser;
 import rabbit.http.HttpHeader;
 import rabbit.httpio.ProxiedProxyChain;
 import rabbit.httpio.SimpleProxyChain;
+import rabbit.httpio.VoleProxyChain;
 import rabbit.io.BufferHandler;
 import rabbit.io.CachingBufferHandler;
 import rabbit.io.ConnectionHandler;
@@ -268,7 +269,7 @@ public class HttpProxy {
 	    proxyChain = setupProxiedProxyChain (pname, pport, pauth);
 	}
 	if (proxyChain == null)
-	    proxyChain = new SimpleProxyChain (nioHandler, dnsHandler);
+	    proxyChain = new VoleProxyChain( nioHandler, dnsHandler);
     }
 
     private void setupResources () {
