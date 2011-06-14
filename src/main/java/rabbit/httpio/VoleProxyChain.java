@@ -60,9 +60,18 @@ public class VoleProxyChain implements ProxyChain {
 			}			
 			ProxySelector myProxySelector = proxySearch.getProxySelector();	
 			ProxySelector.setDefault(myProxySelector);
-			
-			uri = new URI("  ".trim()+url);
-			list = ProxySelector.getDefault().select(uri);
+			// TODO refactor workaround for SSL
+			if (url.indexOf(":443") > 0 && url.indexOf("http://") == -1)
+				uri = new URI("http:/"+"/".trim()+url.substring(0, url.indexOf(":"))); 
+			else
+				uri = new URI("".trim()+url);
+			ProxySelector default1 = ProxySelector.getDefault();
+			try{
+				list = default1.select(uri);
+			}catch (NullPointerException e) {
+				uri =  new URI("  ".trim()+url.substring(0, url.indexOf(":")));
+				list = default1.select(uri);
+			}
 
 			if (list != null && list.size()>0 && list.get(0).address()!=null){
 				String nameAndPort = list.get(0).address().toString();
