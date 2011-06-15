@@ -381,7 +381,7 @@ public class HttpBaseFilter implements HttpFilter {
 
 	ProxyChain proxyChain = con.getProxy ().getProxyChain ();
 	Resolver resolver = proxyChain.getResolver (requri);
-	if (resolver.isProxyConnected ()) {
+	if (resolver!=null && resolver.isProxyConnected ()) {
 	    String auth = resolver.getProxyAuthString ();
 	    // it should look like this (using RabbIT:RabbIT):
 	    // Proxy-authorization: Basic UmFiYklUOlJhYmJJVA==

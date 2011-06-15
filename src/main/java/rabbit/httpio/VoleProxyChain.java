@@ -82,6 +82,8 @@ public class VoleProxyChain implements ProxyChain {
 			}else{
 				resolver = new SimpleResolver(nioHandler, dnsHandler); 
 			}
+		} catch (java.lang.StringIndexOutOfBoundsException e){
+			e.printStackTrace();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
