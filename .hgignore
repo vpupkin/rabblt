@@ -34,3 +34,6 @@ syntax: glob
 effective-pom.xml
 release.properties
 
+
+syntax: regexp
+^logs$
