@@ -269,8 +269,16 @@ public class HttpProxy {
 	    proxyChain = setupProxiedProxyChain (pname, pport, pauth);
 	}
 	if (proxyChain == null)
-	    proxyChain = new VoleProxyChain( nioHandler, dnsHandler);
+	    proxyChain = getVoleProxy();
     }
+
+    static VoleProxyChain retval = null;
+	private VoleProxyChain getVoleProxy() {
+		if (retval == null){
+			retval  = new VoleProxyChain( nioHandler, dnsHandler);
+		}
+		return retval ;
+	}
 
     private void setupResources () {
 	SProperties props = config.getProperties ("data_sources");
