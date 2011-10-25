@@ -92,8 +92,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.khelekore</groupId>
-			<artifactId>rhnio</artifactId>
-			<version>1</version>
+			<artifactId>rnio</artifactId>
+			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code</groupId>
