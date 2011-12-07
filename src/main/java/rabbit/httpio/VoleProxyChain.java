@@ -75,7 +75,8 @@ public class VoleProxyChain implements ProxyChain {
 				
 			ProxySelector default1 = ProxySelector.getDefault();
 			try{
-				list = default1.select(uri);
+				String uriStr = uri.toString();
+				list = default1.select(uriStr.indexOf(":")>0?new URI(uriStr.substring(0,uriStr.indexOf(":"))):uri);
 			}catch (NullPointerException e) {
 				uri =  new URI("  ".trim()+url.substring(0, url.indexOf(":")));
 				list = default1.select(uri);
@@ -85,6 +86,7 @@ public class VoleProxyChain implements ProxyChain {
 				String nameAndPort = list.get(0).address().toString();
 				InetAddress proxy =   InetAddress.getByName( nameAndPort.substring(0, nameAndPort.indexOf(":")));
 				int port = Integer.parseInt(nameAndPort.substring( nameAndPort.indexOf(":")+1));
+				//Aladdin:open sesame
 				String authTmp = "QWxhZGRpbjpvcGVuIHNlc2FtZQ==";
 				resolver = new ProxyResolver(proxy , port, authTmp  );
 			}else{
