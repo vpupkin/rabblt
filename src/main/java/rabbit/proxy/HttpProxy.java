@@ -24,6 +24,8 @@ import org.khelekore.rnio.impl.AcceptorListener;
 import org.khelekore.rnio.impl.BasicStatisticsHolder;
 import org.khelekore.rnio.impl.MultiSelectorNioHandler;
 import org.khelekore.rnio.impl.SimpleThreadFactory;
+
+import cc.co.llabor.cache.Manager;
 import rabbit.cache.Cache;
 import rabbit.cache.NCache;
 import rabbit.dns.DNSHandler;
@@ -112,7 +114,7 @@ public class HttpProxy {
     private final Counter counter = new Counter ();
 
     /** The cache-handler */
-    private NCache<HttpHeader, HttpHeader> cache;
+    private Cache cache;
 
     /** Are we allowed to proxy ssl? */
     protected boolean proxySSL = false;
@@ -302,14 +304,21 @@ public class HttpProxy {
 	SProperties props =
 	    config.getProperties (NCache.class.getName ());
 	HttpHeaderFileHandler hhfh = new HttpHeaderFileHandler ();
-	try {
-	    cache = new NCache<HttpHeader, HttpHeader> (props, hhfh, hhfh);
-	    cache.startCleaner ();
-	} catch (IOException e) {
-	    logger.log (Level.SEVERE,
-			"Failed to setup cache",
-			e);
-	}
+		if (props.get("jsr170cache")==null){
+			try {
+			    cache = new NCache<HttpHeader, HttpHeader> (props, hhfh, hhfh);
+			    ((NCache)cache).startCleaner ();
+			} catch (IOException e) {
+			    logger.log (Level.SEVERE,
+					"Failed to setup cache",
+					e);
+			}
+		}else{
+			String cacheNS = props.get("jsr170cache");
+			net.sf.jsr107cache.Cache cacheTmp = Manager.getCache(cacheNS );
+			cache = new NcacheWrapper(cacheTmp ); 
+			cache.setMaxSize(Integer.valueOf( props.get("maxsize")).intValue());
+		}
     }
 
     /** Configure the SSL support RabbIT should have.
@@ -532,7 +541,10 @@ public class HttpProxy {
      * @return the Cache in use
      */
     public Cache<HttpHeader, HttpHeader> getCache () {
-	return cache;
+    	if (cache == null)
+    		setupCache ();
+    	
+    	return cache;
     }
 
     /** Get the time offset, that is the time between GMT and local time.
